@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class CategoryRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        $id = empty($this->id) ? 0 : $this->id;
+
+        return [
+            'name' => [
+                'required',
+                'string',
+                'unique:categories,name,' . $id . ',id',
+            ],
+            'is_active' => [
+                'required',
+                'boolean'
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'name'          => 'nombre',
+            'is_active'     => 'estado',
+        ];
+    }
+}
