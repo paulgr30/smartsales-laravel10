@@ -10,7 +10,9 @@ class CustomerObserver
     {
         $request = Request();
 
-        $user->username = $request->profile['number_id'];
-        $user->password = $request->profile['number_id'];
+        if ($request->profile) {
+            $user->username = $request->profile['number_id'];
+            $user->password = $request->profile['number_id'];
+        }
     }
 }
