@@ -22,7 +22,7 @@ class UnitRequest extends FormRequest
             'name' => [
                 'required',
                 'string',
-                'unique:categories,name,' . $id . ',id',
+                'unique:units,name,' . $id . ',id',
             ],
             'is_active' => [
                 'required',
