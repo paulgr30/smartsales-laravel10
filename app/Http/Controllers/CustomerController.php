@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileNumberIdRequest;
-use App\Http\Requests\UserRequest;
+use App\Http\Requests\CustomerRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,7 +12,9 @@ class CustomerController extends Controller
 {
     public function getAll()
     {
-        $resources = User::oldest('name')
+        $resources = User::role('Cliente')
+            ->ofNotAuthenticatedUser()
+            ->oldest('name')
             ->with(['profile:user_id,number_id'])
             ->get(['id', 'name']);
         return response()->json($resources, 200);
@@ -20,7 +22,8 @@ class CustomerController extends Controller
 
     public function getByCriteria(Request $request)
     {
-        $resources = User::ofName($request->name)
+        $resources = User::role('Cliente')
+            ->ofName($request->name)
             ->ofProfileNumberId($request->number_id)
             ->latest()
             ->with('profile.identityDocument')
@@ -38,28 +41,34 @@ class CustomerController extends Controller
         return response()->json($resource);
     }
 
-    public function store(UserRequest $request)
+    public function store(CustomerRequest $request)
     {
-        DB::transaction(function () use ($request) {
-            $user = User::create($request->validated());
-            $user->profile()->create($request->validated()['profile']);
+        $dataValidated = $request->validated();
+        $dataValidated['username'] = $dataValidated['profile']['number_id'];
+        $dataValidated['password'] = $dataValidated['profile']['number_id'];
+
+        DB::transaction(function () use ($dataValidated) {
+            $customer = User::create($dataValidated);
+            $customer->profile()->create($dataValidated['profile']);
+            $customer->assignRole('Cliente');
         });
         return response()->json(['message' => 'Operacion realizada con exito'], 201);
     }
 
-    public function update(UserRequest $request, User $user)
+    public function update(CustomerRequest $request, User $customer)
     {
-        DB::transaction(function () use ($request, $user) {
-            $user->update($request->validated());
-            $user->profile()->update($request->validated()['profile']);
+        DB::transaction(function () use ($request, $customer) {
+            $customer->update($request->validated());
+            $customer->profile()->update($request->validated()['profile']);
+            $customer->assignRole('Cliente');
         });
         return response()->json(['message' => 'Operacion realizada con exito'], 200);
     }
 
-    public function destroy(User $user)
+    public function destroy(User $customer)
     {
         try {
-            $user->delete();
+            $customer->delete();
             return response()->json(['message' => 'Operacion realizada con exito']);
         } catch (\Exception $e) {
 
