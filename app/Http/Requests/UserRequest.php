@@ -30,31 +30,28 @@ class UserRequest extends FormRequest
                 'email',
                 //'unique:users,email,' . $id . ',id',
             ],
-            /*'username' => [
+            'username' => [
                 'required',
                 'min:8',
                 'unique:users,username,' . $id . ',id',
             ],
+            'password' => [
+                //'required',
+                'min:8',
+            ],
             'roles' => [
                 'array',
                 'exists:roles,name'
-            ],*/
+            ],
         ];
 
-        /*if ($id == 0 or !empty($this->password)) {
-            $rules = array_merge($rules, [
-                'password' => [
-                    'required',
-                    'min:8',
-                ]
-            ]);
-        }
         // Si es cero, se esta agregando un registro
         if ($id == 0) {
             $rules = array_merge($rules, [
-                'roles' => ['required']
+                'roles' => ['required'],
+                'password' => ['required']
             ]);
-        }*/
+        }
 
 
 
