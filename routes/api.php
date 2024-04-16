@@ -4,6 +4,8 @@ use App\Http\Controllers\{
     AuthController,
     CategoryController,
     CustomerController,
+    UserController,
+    RoleController,
     IdentityDocumentController,
     OrderController,
     OrderStatusController,
@@ -92,6 +94,23 @@ Route::middleware('jwt.auth')->controller(IdentityDocumentController::class)
     );
 
 
+// Customers
+Route::middleware('jwt.auth')->controller(CustomerController::class)
+    ->group(
+        function () {
+            Route::get('customers', 'getAll');
+            Route::get('customers/bycriteria', 'getByCriteria');
+            Route::get('customers/bynumberid', 'getByNumberId');
+            Route::post('customers', 'store');
+            Route::put('customers/{customer}', 'update');
+            Route::delete('customers/{customer}', 'destroy');
+        }
+    );
+
+
+
+
+
 // Product
 Route::middleware('jwt.auth')->controller(IdentityDocumentController::class)
     ->group(
@@ -107,7 +126,7 @@ Route::middleware('jwt.auth')->controller(IdentityDocumentController::class)
 
 
 // Users
-Route::middleware('jwt.auth')->controller(CustomerController::class)
+Route::middleware('jwt.auth')->controller(UserController::class)
     ->group(
         function () {
             Route::get('users', 'getAll');
@@ -116,6 +135,14 @@ Route::middleware('jwt.auth')->controller(CustomerController::class)
             Route::post('users', 'store');
             Route::put('users/{user}', 'update');
             Route::delete('users/{user}', 'destroy');
+        }
+    );
+
+// Roles
+Route::middleware('jwt.auth')->controller(RoleController::class)
+    ->group(
+        function () {
+            Route::get('roles', 'getAll');
         }
     );
 
