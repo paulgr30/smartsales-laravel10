@@ -12,7 +12,7 @@ class UserController extends Controller
 {
     public function getAll()
     {
-        $resources = User::role('Cliente')
+        $resources = User::ofNotHaveCustomerRole()
             ->oldest('name')
             ->with(['profile:user_id,number_id'])
             ->get(['id', 'name']);
@@ -64,7 +64,9 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         try {
-            $user->delete();
+            DB::transaction(function () use ($user) {
+                $user->delete();
+            });
             return response()->json(['message' => 'Operacion realizada con exito']);
         } catch (\Exception $e) {
 

@@ -68,7 +68,9 @@ class CustomerController extends Controller
     public function destroy(User $customer)
     {
         try {
-            $customer->delete();
+            DB::transaction(function () use ($customer) {
+                $customer->delete();
+            });
             return response()->json(['message' => 'Operacion realizada con exito']);
         } catch (\Exception $e) {
 
