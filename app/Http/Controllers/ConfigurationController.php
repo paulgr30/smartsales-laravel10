@@ -3,47 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Models\Configuration;
-use Illuminate\Http\Request;
+use App\Http\Requests\ConfigRequest;
+use Illuminate\Support\Facades\Storage;
 
 class ConfigurationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function getAll()
     {
-        //
+        $resource = Configuration::first();
+        return response()->json($resource, 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function update(ConfigRequest $request, Configuration $config)
     {
-        //
-    }
+        //Storage::delete($config->image_url);
+        $dataValidated = $request->validated();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Configuration $configuration)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Configuration $configuration)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Configuration $configuration)
-    {
-        //
+        // Verificamos si hay un archivo(imagen)
+        if ($request->hasFile('image_url')) {
+            $image = $request->file('image_url');
+            // Almacenamos la imagen en el storage y obtenemos su ruta
+            $path = Storage::disk('public')->put('/', $image);
+            // Verificamos si ya se tiene una imagen
+            if ($config->image_url) {
+                // Eliminamos la imagen actual
+                Storage::disk('public')->delete($config->image_url);
+                // Agregamos la url de la imagen al array
+                $dataValidated['image_url'] = $path;
+            }
+        }
+        $config->update($dataValidated);
+        return response()->json(['message' => 'Operacion realizada con exito']);
     }
 }

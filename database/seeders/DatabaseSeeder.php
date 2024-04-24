@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         // ]);
 
 
+        $this->call(ConfigurationSeeder::class);
         $this->call(UnitSeeder::class);
         $this->call(IdentityDocumentSeeder::class);
         $this->call(OrderStatusesSeeder::class);

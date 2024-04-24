@@ -3,6 +3,7 @@
 use App\Http\Controllers\{
     AuthController,
     CategoryController,
+    ConfigurationController,
     CustomerController,
     UserController,
     RoleController,
@@ -11,7 +12,7 @@ use App\Http\Controllers\{
     OrderStatusController,
     ProductController,
     UnitController
-};;
+};
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +47,18 @@ Route::middleware('jwt.auth')->controller(AuthController::class)->prefix('auth')
             Route::post('password/change', 'changePassword')->name('auth.password.change');
             Route::post('token/refresh', 'refreshToken')->name('auth.token.refresh');
             Route::post('logout', 'logout')->name('auth.logout');
+        }
+    );
+
+
+
+
+// Configurations
+Route::middleware('jwt.auth')->controller(ConfigurationController::class)
+    ->group(
+        function () {
+            Route::get('configurations', 'getAll')->name('configurations.all');
+            Route::post('configurations/{config}', 'update')->name('configurations.update');
         }
     );
 

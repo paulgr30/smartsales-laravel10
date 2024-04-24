@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('configurations', function (Blueprint $table) {
             $table->id();
-            $table->string('ruc', 15);
+            $table->string('ruc', 11);
             $table->string('name_business');
+            $table->string('address');
             $table->string('phone', 12);
             $table->string('email');
-            $table->string('tax_label', 10);
             $table->decimal('sales_tax', 12, 2);
+            $table->string('image_url');
             $table->timestamps();
         });
     }
