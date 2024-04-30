@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Configuration;
 use App\Http\Requests\ConfigRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ConfigurationController extends Controller
@@ -11,7 +12,13 @@ class ConfigurationController extends Controller
     public function getAll()
     {
         $resource = Configuration::first();
-        return response()->json($resource, 200);
+        return response()->json($resource);
+    }
+
+    public function getImageUrl()
+    {
+        $resource = Configuration::first();
+        return response()->json($resource->image_url);
     }
 
     public function update(ConfigRequest $request, Configuration $config)

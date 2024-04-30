@@ -62,6 +62,13 @@ Route::middleware('jwt.auth')->controller(ConfigurationController::class)
         }
     );
 
+Route::controller(ConfigurationController::class)
+    ->group(
+        function () {
+            Route::get('configurations/image', 'getImageUrl')->name('configurations.imageurl');
+        }
+    );
+
 
 
 
